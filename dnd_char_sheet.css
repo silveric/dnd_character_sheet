@@ -143,3 +143,54 @@ textarea {
 #char_name{
   font-size: 1.2rem;
 }
+
+/*modal_characters_data*/
+#modal_characters_data_settings{}
+#modal_characters_data_characters_list{
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom:15px;
+}
+.modal_characters_data_character_elt{
+  background: #b4d0c9;
+  border: 2px solid #444;
+  padding: 5px;
+  border-radius: 10px;
+  min-width: 120px;
+  flex: 1;
+  text-align: center;
+  margin-bottom:5px;
+}
+.modal_characters_data_character_elt_details{
+
+}
+.modal_characters_data_character_elt_name{
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+.modal_characters_data_character_elt_lvl{
+  font-size: 0.8rem;
+  font-style: italic;
+}
+.modal_characters_data_character_elt_race{
+
+}
+.modal_characters_data_character_elt_actions{
+
+}
+.modal_characters_data_character_elt_actions_load,.modal_characters_data_character_elt_actions_delete{
+  display: inline-block;
+  border: 1px solid #444;
+  border-radius: 5px;
+  padding: 5px;
+  margin:0 10px;
+  cursor: pointer;
+}
+.modal_characters_data_character_elt_actions_load{
+  background: white;
+}
+.modal_characters_data_character_elt_actions_delete{
+  background: red;
+  color: white;
+}
