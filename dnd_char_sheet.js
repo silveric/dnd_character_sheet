@@ -24,7 +24,7 @@ function init(){
 	console.log(currentCharData);
 	console.log("END-INIT");
 
-	init_characters_storage_datas();
+	init_modals();
 	displayCharacterInfos();
 }
 
@@ -42,7 +42,7 @@ jQuery(document).on("click","#basic_infos_modal_save_btn",function() {
 	saveStat("basicInfo_subclass",val_subclass);
 	saveStat("basicInfo_species",val_species);
 
-	display_basicInfos();
+	displayCharacterInfos();
 
 	jQuery("#basic_infos_modal").hide();
 });
@@ -114,18 +114,37 @@ function displayCharacterInfos(){
 	jQuery("#character_id_display").html(currentCharID);
 	if(!currentCharData){return false;}
 
-	display_basicInfos();
-
-}
-
-function display_basicInfos(){
-	if(!currentCharData){return null;}
+	//Basic infos
 	jQuery("#char_name").html(getStat("basicInfo_name") ?? jQuery("#char_name").attr("data-default_val"));
 	jQuery("#char_background").html(getStat("basicInfo_background") ?? jQuery("#char_background").attr("data-default_val"));
 	jQuery("#char_class").html(getStat("basicInfo_class") ?? jQuery("#char_class").attr("data-default_val"));
 	jQuery("#char_subclass").html(getStat("basicInfo_subclass") ?? jQuery("#char_subclass").attr("data-default_val"));
 	jQuery("#char_species").html(getStat("basicInfo_species") ?? jQuery("#char_species").attr("data-default_val"));
 
+	//Level
+	jQuery("#lvl_value").html(currentCharData["lvl_value"] ?? jQuery("#lvl_value").attr("data-default_val"));
+	jQuery("#exp_value").html(currentCharData["exp_value"] ?? jQuery("#exp_value").attr("data-default_val"));
+
+	//Armor / Shield
+	jQuery("#armor_class").html(currentCharData["armor_class"] ?? jQuery("#armor_class").attr("data-default_val"));
+	jQuery("#has_shield").prop("checked",!!getStat("has_shield"));
+	/*if(currentCharData["has_shield"]){
+		jQuery("#has_shield").prop("checked",true);
+	}*/
+
+}
+
+/**
+ * Initialize all modals
+ */
+function init_modals(){
+	init_modal_characters_storage_datas();
+	init_modal_basic_infos();
+	init_modal_level_xp();
+	init_modal_armor_class_shield();
+}
+
+function init_modal_basic_infos(){
 	jQuery("#basic_info_input_name").val(getStat("basicInfo_name") ?? "");
 	jQuery("#basic_info_input_background").val(getStat("basicInfo_background") ?? "");
 	jQuery("#basic_info_input_class").val(getStat("basicInfo_class") ?? "");
@@ -133,15 +152,75 @@ function display_basicInfos(){
 	jQuery("#basic_info_input_species").val(getStat("basicInfo_species") ?? "");
 }
 
-jQuery(document).on("click","#action_nuke_datas",function() {
-	let resConfirm = confirm("Are you sure? This will delete everything.");
-	if(resConfirm){
-		nukeCharDatas();
-		location.reload();
+
+
+/**
+ * Level and XP
+ */
+function init_modal_level_xp(){
+	jQuery("#level_input_level").val(getStat("lvl_value") ?? "");
+	jQuery("#level_input_xp").val(getStat("exp_value") ?? "");
+}
+jQuery(document).on("click","#level_modal_level_down",function() {
+	let levelInputDOM = jQuery("#level_input_level");
+	let currentLevel = parseInt(levelInputDOM.val());
+	if(isNaN(currentLevel) || currentLevel <= 1){
+		levelInputDOM.val(0);return true;
+	}else{
+		levelInputDOM.val(currentLevel - 1);return true;
 	}
 });
 
-function init_characters_storage_datas(){
+jQuery(document).on("click","#level_modal_level_up",function() {
+	let levelInputDOM = jQuery("#level_input_level");
+	let currentLevel = parseInt(levelInputDOM.val());
+	if(isNaN(currentLevel) || currentLevel < 0){
+		levelInputDOM.val(0);return true;
+	}else{
+		levelInputDOM.val(currentLevel + 1);return true;
+	}
+});
+
+jQuery(document).on("click","#level_modal_save_btn",function() {
+	let val_lvl = jQuery("#level_input_level").val();
+	let val_xp = jQuery("#level_input_xp").val();
+
+	saveStat("lvl_value",val_lvl);
+	saveStat("exp_value",val_xp);
+
+	displayCharacterInfos();
+
+	jQuery("#level-modal").hide();
+
+});
+
+/**
+ * Armor Class / Shield
+ */
+function init_modal_armor_class_shield(){
+	jQuery("#armor_class_input").val(getStat("armor_class") ?? "");
+	jQuery("#has_shield_input").prop("checked",!!getStat("has_shield"));
+	return true;
+}
+
+jQuery(document).on("click","#armor_class_modal_save_btn",function() {
+	const armorClass = jQuery("#armor_class_input").val(  );
+	const hasShield = jQuery("#has_shield_input").prop( "checked" );
+
+	saveStat("armor_class",armorClass);
+	saveStat("has_shield",hasShield);
+
+	displayCharacterInfos();
+	jQuery("#armor_class_modal").hide();
+
+	return true;
+});
+
+
+
+
+
+function init_modal_characters_storage_datas(){
 	jQuery("#modal_characters_data_characters_list").empty();
 
 	//Getting characters in storage and creating new .modal_characters_data_character_elt in the characters datas modal
@@ -206,6 +285,14 @@ function init_characters_storage_datas(){
 		localStorage.setItem(localStorageID_charactersDatas, JSON.stringify(charactersDatas));
 		localStorage.setItem(localStorageID_lastCharID, newCharID);
 		location.reload();
+	});
+
+	jQuery(document).on("click","#action_nuke_datas",function() {
+		let resConfirm = confirm("Are you sure? This will delete everything.");
+		if(resConfirm){
+			nukeCharDatas();
+			location.reload();
+		}
 	});
 }
 

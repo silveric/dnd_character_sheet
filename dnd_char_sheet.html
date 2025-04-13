@@ -24,35 +24,61 @@
 
   <div class="cards-container">
     <div class="card can_modif" onclick="openModal('basic_infos_modal')">
-		<div id="char_name_wrapper">
-          <span id="char_name" class="data_content" data-default_val="[Name not set]">[Name not set]</span>
-        </div>
-        <div id="char_background_wrapper">
-          <span class="basic_info_label" >Background</span> - <span id="char_background" class="data_content" data-default_val="[Background not set]">[Background not set]</span>
-        </div>
-        <div id="char_class_wrapper">
-          <span class="basic_info_label" >Class</span> - <span id="char_class" class="data_content" data-default_val="[Class not set]">[Class not set]</span>
-        </div>
-        <div id="char_subclass_wrapper">
-          <span class="basic_info_label" >Subclass</span> - <span id="char_subclass" class="data_content" data-default_val="[Subclass not set]">[Subclass not set]</span>
-        </div>
-        <div id="char_species_wrapper">
-          <span class="basic_info_label" >Species</span> - <span id="char_species" class="data_content" data-default_val="[Species not set]">[Species not set]</span>
+        <div class="card-content">
+            <div id="char_name_wrapper">
+              <span id="char_name" class="data_content" data-default_val="[Name not set]">[Name not set]</span>
+            </div>
+            <div id="char_background_wrapper">
+              <span class="basic_info_label" >Background</span> - <span id="char_background" class="data_content" data-default_val="[Background not set]">[Background not set]</span>
+            </div>
+            <div id="char_class_wrapper">
+              <span class="basic_info_label" >Class</span> - <span id="char_class" class="data_content" data-default_val="[Class not set]">[Class not set]</span>
+            </div>
+            <div id="char_subclass_wrapper">
+              <span class="basic_info_label" >Subclass</span> - <span id="char_subclass" class="data_content" data-default_val="[Subclass not set]">[Subclass not set]</span>
+            </div>
+            <div id="char_species_wrapper">
+              <span class="basic_info_label" >Species</span> - <span id="char_species" class="data_content" data-default_val="[Species not set]">[Species not set]</span>
+            </div>
         </div>
     </div>
 	
   </div>
-  <div class="cards-container">
-	  <div class="card" style="flex:0.3;">
-			<div>Level</div>
-			<div>-</div>
+  <div class="cards-container" >
+	  <div class="card can_modif" onclick="openModal('level-modal')" style="flex:0.3;">
+			<div class="card_header">Level</div>
+            <div class="card-content">
+                <div>
+                    <span id="lvl_value" data-default_val="-"></span>
+                </div>
+                <div>
+                    <span id="exp_value" data-default_val="0"></span> xp
+                </div>
+            </div>
+
 		</div>
-		<div class="card" style="flex:0.3;">
-			<div>Armor Class</div>
-			<div>-</div>
+		<div class="card can_modif" onclick="openModal('armor_class_modal')" style="flex:0.3;">
+			<div class="card_header">Armor Class</div>
+            <div class="card-content">
+                <div>
+                    <span id="armor_class" data-default_val="-">3</span>
+                </div>
+                <div id="has_shield_wrapper">
+                    Shield
+                    <div class="checkbox_wrapper_him">
+                        <input type="checkbox" id="has_shield" disabled>
+                        <label for="has_shield" style="--size:30px">
+                            <div class="tick_mark"></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
 		</div>
 		<div class="card">
-			<div>[Hit Points]</div>
+			<div class="card_header">[Hit Points]</div>
+            <div class="card-content">
+                <div>-</div>
+            </div>
 		</div>
   </div>
 
@@ -102,6 +128,68 @@
         Save
       </button>
     </div>
+  </div>
+
+  <div id="level-modal" class="modal">
+      <div class="modal-content">
+          <span class="modal_close" >&times;</span>
+          <h2>Level and XP</h2>
+
+          <label for="level_input_level">
+              Level
+              <div id="level_input_level_inputs">
+                  <button id="level_modal_level_down">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-circle" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293z"/>
+                      </svg>
+                  </button>
+                  <div style="width:60%">
+                      <input type="number" id="level_input_level" name="level" placeholder="Level" >
+                  </div>
+                  <button id="level_modal_level_up">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up-circle" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z"/>
+                      </svg>
+                  </button>
+              </div>
+
+          </label>
+
+          <label for="level_input_xp">
+              XP
+              <input type="number" id="level_input_xp" name="name" placeholder="XP" style="text-align: center;">
+          </label>
+
+          <button id="level_modal_save_btn">
+              Save
+          </button>
+      </div>
+  </div>
+
+  <div id="armor_class_modal" class="modal">
+      <div class="modal-content">
+          <span class="modal_close" >&times;</span>
+          <h2>Armor Class and Shield</h2>
+
+          <label for="armor_class_input">
+              Armor Class
+              <input type="number" id="armor_class_input" name="name"  style="text-align: center;">
+          </label>
+
+          Shield
+          <div class="checkbox_wrapper_him" style="text-align: center;">
+              <input type="checkbox" id="has_shield_input" >
+              <label for="has_shield_input" style="--size:30px">
+                  <div class="tick_mark"></div>
+              </label>
+          </div>
+
+          <hr>
+
+          <button id="armor_class_modal_save_btn">
+              Save
+          </button>
+      </div>
   </div>
 
   <div id="features-modal" class="modal">
