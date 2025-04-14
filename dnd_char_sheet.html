@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="dnd_char_sheet.css">
+  <link rel="stylesheet" href="dnd_char_sheet.css?v=1.0">
   <link rel="stylesheet" href="pico.min.css">
+  <link rel="stylesheet" href="bootstrap-grid.css">
   <script src="jquery-3.7.1.min.js"></script>
-  <script src="dnd_char_sheet.js"></script> 
+  <script src="dnd_char_sheet.js?v=1.0"></script>
   <title>DnD 2024 Character Dashboard</title>
 </head>
 <body>
@@ -61,7 +62,7 @@
 			<div class="card_header">Armor Class</div>
             <div class="card-content">
                 <div>
-                    <span id="armor_class" data-default_val="-">3</span>
+                    <span id="armor_class" data-default_val="-"></span>
                 </div>
                 <div id="has_shield_wrapper">
                     Shield
@@ -75,9 +76,48 @@
             </div>
 		</div>
 		<div class="card">
-			<div class="card_header">[Hit Points]</div>
-            <div class="card-content">
-                <div>-</div>
+            <div class="card-content row" style="height:100%" onclick="init_modal_hp();openModal('hp_modal')">
+                <div class="col-5" style="border-right:solid #cacaca 1px; ">
+                    <div>
+                        Hit Points
+                    </div>
+                    <div id="hp_vals_wrapper" data-severity="1">
+                        <span id="hp_current" data-default_val="-">12</span> / <span id="hp_max" data-default_val="-">12</span>
+                    </div>
+                    <div id="hp_temp_wrapper">
+                        <span id="hp_temp" data-default_val=""></span>
+                    </div>
+                </div>
+                <div class="col" style="border-right:solid #cacaca 1px; ">
+                    <div>
+                        Hit Dice
+                    </div>
+                    <div id="hit_dices_wrapper" data-severity="1">
+                        <span id="hit_dice_spent" data-default_val="-">0</span> / <span id="hit_dice_max" data-default_val="-">1</span>
+                    </div>
+                </div>
+                <div class="col">
+                    <div>
+                        Death Saves
+                    </div>
+                    <div id="death_saves_wrapper" data-severity="1">
+                        <div style="color:green">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05"/>
+                            </svg>
+                            <span id="death_saves_successes" data-default_val="-" >-</span> / <span>3</span>
+                        </div>
+                        <div style="color:red">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                            </svg>
+                            <span id="death_saves_failures" data-default_val="-" >-</span> / <span>3</span>
+                        </div>
+                    </div>
+
+                </div>
             </div>
 		</div>
   </div>
@@ -187,6 +227,78 @@
           <hr>
 
           <button id="armor_class_modal_save_btn">
+              Save
+          </button>
+      </div>
+  </div>
+
+  <div id="hp_modal" class="modal">
+      <div class="modal-content">
+          <span class="modal_close" >&times;</span>
+          <div class="row">
+              <div class="col">
+                  <button id="hp_get_a_hit_btn" class="col" style="background-color: #d55555;color: white;">
+                      Get a hit (Modify HP)
+                  </button>
+              </div>
+              <div class="col">
+                  <button id="hp_heal_btn" class="col" style="background-color: #46a346;color: white;">
+                      Heal (Modify HP)
+                  </button>
+              </div>
+          </div>
+          <hr>
+          <div class="row">
+              <div class="col">
+                  <label for="hp_current_input">
+                      HP Current
+                      <input type="number" id="hp_current_input" name="hp_current"  style="text-align: center;">
+                  </label>
+              </div>
+              <div class="col">
+                  <label for="hp_max_input">
+                      HP Max
+                      <input type="number" id="hp_max_input" name="hp_max"  style="text-align: center;">
+                  </label>
+              </div>
+              <div class="col">
+                  <label for="hp_temp_input">
+                      HP Temporary
+                      <input type="number" id="hp_temp_input" name="hp_temp"  style="text-align: center;">
+                  </label>
+              </div>
+          </div>
+          <hr>
+          <div class="row">
+              <div class="col">
+                  <label for="hit_dice_spent_input">
+                      Hit dice spent
+                      <input type="number" id="hit_dice_spent_input" name="hit_dice_spent"  style="text-align: center;">
+                  </label>
+              </div>
+              <div class="col">
+                  <label for="hit_dice_max_input">
+                      Hit dice max
+                      <input type="number" id="hit_dice_max_input" name="hit_dice_max"  style="text-align: center;">
+                  </label>
+              </div>
+          </div>
+          <hr>
+          <div class="row">
+              <div class="col">
+                  <label for="death_saves_successes_input">
+                      Death Saves Successes
+                      <input type="number" min="0" max="3" id="death_saves_successes_input" name="death_saves_successes"  style="text-align: center;">
+                  </label>
+              </div>
+              <div class="col">
+                  <label for="death_saves_failures_input">
+                      Death Saves Failures
+                      <input type="number" min="0" max="3" id="death_saves_failures_input" name="death_saves_failures"  style="text-align: center;">
+                  </label>
+              </div>
+          </div>
+          <button id="hp_modal_save_btn">
               Save
           </button>
       </div>

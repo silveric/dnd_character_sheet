@@ -128,9 +128,16 @@ function displayCharacterInfos(){
 	//Armor / Shield
 	jQuery("#armor_class").html(currentCharData["armor_class"] ?? jQuery("#armor_class").attr("data-default_val"));
 	jQuery("#has_shield").prop("checked",!!getStat("has_shield"));
-	/*if(currentCharData["has_shield"]){
-		jQuery("#has_shield").prop("checked",true);
-	}*/
+
+	//HP
+	jQuery("#hp_current").html(getStat("hp_current") ?? jQuery("#hp_current").attr("data-default_val"));
+	jQuery("#hp_temp").html(getStat("hp_temp") ?? jQuery("#hp_temp").attr("data-default_val"));
+	jQuery("#hp_vals_wrapper").attr("data-severity",hp_get_severity());
+	jQuery("#hit_dice_spent").html(getStat("hit_dice_spent") ?? jQuery("#hit_dice_spent").attr("data-default_val"));
+	jQuery("#hit_dice_max").html(getStat("hit_dice_max") ?? jQuery("#hit_dice_spent").attr("data-default_val"));
+	jQuery("#death_saves_successes").html(getStat("death_saves_successes") ?? jQuery("#death_saves_successes").attr("data-default_val"));
+	jQuery("#death_saves_failures").html(getStat("death_saves_failures") ?? jQuery("#death_saves_failures").attr("data-default_val"));
+
 
 }
 
@@ -142,6 +149,7 @@ function init_modals(){
 	init_modal_basic_infos();
 	init_modal_level_xp();
 	init_modal_armor_class_shield();
+	init_modal_hp();
 }
 
 function init_modal_basic_infos(){
@@ -216,6 +224,106 @@ jQuery(document).on("click","#armor_class_modal_save_btn",function() {
 	return true;
 });
 
+/**
+ * HP / Hit Dice / Death Saves
+ */
+
+function init_modal_hp(){
+	jQuery("#hp_current_input").val(getStat("hp_current") ?? "");
+	jQuery("#hp_max_input").val(getStat("hp_max") ?? "");
+	jQuery("#hp_temp_input").val(getStat("hp_temp") ?? "");
+
+	jQuery("#hit_dice_spent_input").val(getStat("hit_dice_spent") ?? "");
+	jQuery("#hit_dice_max_input").val(getStat("hit_dice_max") ?? "");
+
+	jQuery("#death_saves_successes_input").val(getStat("death_saves_successes") ?? "");
+	jQuery("#death_saves_failures_input").val(getStat("death_saves_failures") ?? "");
+
+	return true;
+}
+function hp_get_severity(){
+	const hp_current = getStat("hp_current");
+	const hp_max = getStat("hp_max");
+	if(!hp_current || !hp_max) {return null;}
+	const ratio = hp_current / hp_max;
+	if(ratio > 0.77){
+		return 1;
+	}else if(ratio > 0.33){
+		return 2;
+	}else{
+		return 3;
+	}
+}
+
+jQuery(document).on("click","#hp_get_a_hit_btn",function() {
+
+
+	let hp_current = parseInt(jQuery("#hp_current_input").val());
+	let hp_max = parseInt(jQuery("#hp_max_input").val());
+	let hp_temporary = parseInt(jQuery("#hp_temp_input").val());
+
+	if(!hp_current || !hp_max) {alert("Can't get a hit. Fill at least HP Current and HP Max");return false;}
+
+	const damages =  prompt("How many damage?");
+	let damages_cumul = parseInt(damages);
+	if(isNaN(damages_cumul)){return false;}
+	if(hp_temporary){
+		if(damages_cumul >= hp_temporary){
+			//Damages got all the temporary HP
+			jQuery("#hp_temp_input").val(0);
+			damages_cumul -= hp_temporary;
+		}else{
+			//Temporary HP were enough to tank
+			jQuery("#hp_temp_input").val(hp_temporary - damages_cumul); return true;
+		}
+	}
+
+	if(damages_cumul >= hp_current ){
+		//You ded, bruh
+		jQuery("#hp_current_input").val(0);
+	}else{
+		jQuery("#hp_current_input").val(hp_current - damages_cumul); return true;
+	}
+});
+jQuery(document).on("click","#hp_heal_btn",function() {
+	let hp_current = parseInt(jQuery("#hp_current_input").val());
+	let hp_max = parseInt(jQuery("#hp_max_input").val());
+
+	if(!hp_current || !hp_max) {alert("Can't heal. Fill at least HP Current and HP Max");return false;}
+	const heal =  parseInt(prompt("How many HP to heal?"));
+	if(isNaN(heal)){return false;}
+	let hp_after_heal = heal + hp_current;
+	if(hp_after_heal >= hp_max){
+		jQuery("#hp_current_input").val(hp_max);
+	}else{
+		jQuery("#hp_current_input").val(hp_after_heal);
+	}
+});
+
+jQuery(document).on("click","#hp_modal_save_btn",function() {
+	const hp_current = jQuery("#hp_current_input").val();
+	const hp_max = jQuery("#hp_max_input").val();
+	const hp_temp = jQuery("#hp_temp_input").val();
+
+	const hit_dice_spent = jQuery("#hit_dice_spent_input").val();
+	const hit_dice_max = jQuery("#hit_dice_max_input").val();
+
+	const death_saves_successes = jQuery("#death_saves_successes_input").val();
+	const death_saves_failures = jQuery("#death_saves_failures_input").val();
+
+	saveStat("hp_current",hp_current);
+	saveStat("hp_max",hp_max);
+	saveStat("hp_temp",hp_temp);
+	saveStat("hit_dice_spent",hit_dice_spent);
+	saveStat("hit_dice_max",hit_dice_max);
+	saveStat("death_saves_successes",death_saves_successes);
+	saveStat("death_saves_failures",death_saves_failures);
+
+	displayCharacterInfos();
+	jQuery("#hp_modal").hide();
+
+	return true;
+});
 
 
 
