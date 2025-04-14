@@ -94,6 +94,7 @@ function generateRanCharID(security = 0){
 
 	//Checking if that ID isn't already taken
 	let charactersDatas = JSON.parse(localStorage.getItem(localStorageID_charactersDatas));
+	if(!charactersDatas){return result}
 	if(charactersDatas[result]){
 		return generateRanCharID(security++);
 	}
